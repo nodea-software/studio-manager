@@ -10,7 +10,7 @@ services:
     networks:
       - proxy
     volumes:
-      - "studio-manager_app:/app"
+      - "app:/app"
     labels:
       - "traefik.enable=true"
       - "traefik.frontend.rule=Host:studio-manager.nodea.studio"
@@ -18,20 +18,20 @@ services:
   database:
     image: "nodea-database"
     environment:
-      MYSQL_DATABASE: ""
+      MYSQL_DATABASE: "studio-manager"
       MYSQL_USER: ""
       MYSQL_PASSWORD: ""
       MYSQL_ROOT_PASSWORD: ""
     networks:
       - proxy
     volumes:
-      - "studio-manager_db_data:/var/lib/mysql"
-      - "studio-manager_db_log:/var/log/mysql"
+      - "db_data:/var/lib/mysql"
+      - "db_log:/var/log/mysql"
 
 volumes:
-  studio-manager_app:
-  studio-manager_db_data:
-  studio-manager_db_log:
+  app:
+  db_data:
+  db_log:
  
 networks:
   proxy:
