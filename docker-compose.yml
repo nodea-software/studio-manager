@@ -8,7 +8,7 @@ services:
     environment:
       NPS_ENV: "cloud"
     networks:
-      - "proxy"
+      - proxy
     volumes:
       - "studio-manager_app:/app"
     labels:
@@ -23,12 +23,17 @@ services:
       MYSQL_PASSWORD: ""
       MYSQL_ROOT_PASSWORD: ""
     networks:
-      - proxy"
+      - proxy
     volumes:
       - "studio-manager_db_data:/var/lib/mysql"
       - "studio-manager_db_log:/var/log/mysql"
 
+volumes:
+  studio-manager_app:
+  studio-manager_db_data:
+  studio-manager_db_log:
+ 
 networks:
   proxy:
     external:
-      name: "proxy"
+      name: proxy
