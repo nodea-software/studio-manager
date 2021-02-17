@@ -12,8 +12,8 @@ var databaseConf = {
     cloud: {
         host: 'database',
         port: '3306',
-        user: '',
-        password: '',
+        user: 'nodea',
+        password: 'nodea',
         database: 'studio-manager',
         dialect: 'mysql'
     }

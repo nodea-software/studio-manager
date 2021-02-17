@@ -1,7 +1,8 @@
 version: '2'
 
 services:
-  container:
+  app:
+    container_name: studio-manager_app
     image: "studio-manager:latest"
     links:
       - "database:database"
@@ -12,16 +13,24 @@ services:
     volumes:
       - "app:/app"
     labels:
-      - "traefik.enable=true"
-      - "traefik.frontend.rule=Host:studio-manager.nodea.studio"
-      - "traefik.port=1337"
+     # Frontend
+     - "traefik.enable=true"
+     - "traefik.http.routers.studio-manager.rule=Host(`studio-manager.nodea.studio`)"
+     - "traefik.http.routers.studio-manager.entrypoints=websecure"
+     - "traefik.http.services.studio-manager.loadbalancer.server.port=1337"
+     - "traefik.http.routers.studio-manager.service=studio-manager"
+     # TLS and security
+     - "traefik.http.routers.studio-manager.tls=true"
+     - "traefik.http.routers.studio-manager.tls.options=intermediate@file"
+     - "traefik.http.routers.studio-manager.middlewares=secure-headers@file"
   database:
+    container_name: studio-manager_database
     image: "nodea-database"
     environment:
       MYSQL_DATABASE: "studio-manager"
-      MYSQL_USER: ""
-      MYSQL_PASSWORD: ""
-      MYSQL_ROOT_PASSWORD: ""
+      MYSQL_USER: "nodea"
+      MYSQL_PASSWORD: "nodea"
+      MYSQL_ROOT_PASSWORD: "nodea"
     networks:
       - proxy
     volumes:

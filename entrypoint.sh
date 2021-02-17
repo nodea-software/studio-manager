@@ -1,4 +1,4 @@
 #!/bin/bash
-cd /app/studio-manager
+cd /app
 npm install
 npm start
