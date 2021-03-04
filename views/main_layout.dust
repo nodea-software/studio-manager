@@ -9,7 +9,7 @@
         </title>
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
 
-        <link href="/img/logo/thumbnail/logo_logo_newmips.png" rel="icon">
+        <link href="/img/logo_nodea_color.png" rel="icon">
     </head>
 
     <body class="skin-blue-light layout-default sidebar-mini">{! ---------------- CSS ---------------- !}
@@ -181,7 +181,10 @@
                 <section class="sidebar">
                     {! Sidebar user panel !}
                     <div class="user-panel" style="text-align:center;">
-                        <div class="pull-center image"><a href="/"><img src="/img/logo_newmips.png" alt="Logo"></a><a href="/"></a>
+                        <div class="pull-center image">
+                            <a href="/">
+                                <img src="/img/logo_nodea_color.png" alt="Logo">
+                            </a>
                             {! *** #logo *** !}
                             {! Navigation between modules !}
                             <div class="sidebar-form">

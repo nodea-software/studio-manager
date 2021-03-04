@@ -41,7 +41,7 @@ volumes:
   app:
   db_data:
   db_log:
- 
+
 networks:
   proxy:
     external:

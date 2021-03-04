@@ -1,6 +1,33 @@
 const models = require('../models/');
 const request = require('request-promise');
 
+let token = null;
+
+async function authenticate(conf) {
+
+    if(token && token != '')
+        return token;
+
+    console.log('authenticate CRON');
+
+    let callResults = await request({
+        uri: conf.f_portainer_api_url + "/auth",
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: {
+            Username: conf.f_portainer_login,
+            Password: conf.f_portainer_password
+        },
+        json: true // Automatically stringifies the body to JSON
+    });
+
+    // Full token
+    token = "Bearer " + callResults.jwt;
+    return token;
+}
+
 module.exports = () => {
 	(async () => {
 
@@ -10,21 +37,7 @@ module.exports = () => {
 			}
 		});
 
-		let callResults = await request({
-		    uri: conf.f_portainer_api_url + "/auth",
-		    method: 'POST',
-		    headers: {
-			    'Content-Type': 'application/json'
-			},
-		    body: {
-		        Username: conf.f_portainer_login,
-		        Password: conf.f_portainer_password
-		    },
-			json: true // Automatically stringifies the body to JSON
-		});
-
-		// Full token
-		let token = "Bearer "+ callResults.jwt;
+		await authenticate(conf);
 
 		let allContainers = await request({
 		    uri: conf.f_portainer_api_url + "/endpoints/1/docker/containers/json",
@@ -36,13 +49,18 @@ module.exports = () => {
 	    	json: true
 		});
 
+		// Filter container other that nodea
+		allContainers = allContainers.filter(x => {
+			return x.Labels['nodea'] == "true";
+		});
+
 		// Looking for our container ID
 		let stack, stacksDone = [], containers, ipAdresses, environment, url = "";
 		for (var i = 0; i < allContainers.length; i++) {
 
 			stack = allContainers[i].Labels['com.docker.compose.project'];
 
-			if(typeof stack !== "undefined" && stack != "traefik" && stacksDone.indexOf(stack) == -1){
+			if(typeof stack !== "undefined" && stack != "traefik" && stack != "studio-manager" && stacksDone.indexOf(stack) == -1){
 
 				containers = allContainers.filter(x => {
 					return x.Labels['com.docker.compose.project'] == stack
@@ -55,14 +73,19 @@ module.exports = () => {
 
 				containers.map(x => {
 					if(x.Names[0].indexOf("database") != -1){
-						ipAdresses.database = x.NetworkSettings.Networks.proxy.IPAddress
+						// Nodea database
+						ipAdresses.database = x.NetworkSettings.Networks[x.HostConfig.NetworkMode].IPAddress
 						return true;
 					} else {
-						ipAdresses.container = x.NetworkSettings.Networks.proxy.IPAddress;
-						url = x.Labels["traefik.frontend.rule"].split("Host:")[1]
+						// Nodea container
+						ipAdresses.container = x.NetworkSettings.Networks[x.HostConfig.NetworkMode].IPAddress;
+						url = x.Labels["traefik.http.routers." + stack + ".rule"].split("Host(`")[1].slice(0, -2)
 						return true;
 					}
 				});
+
+				if(url == '')
+					continue;
 
 				environment = await models.E_environment.findOne({
 					where : {
@@ -75,13 +98,13 @@ module.exports = () => {
 						f_name: stack,
 						f_container_ip: ipAdresses.container,
 						f_database_ip: ipAdresses.database,
-						f_url: "http://" + url
+						f_url: "https://" + url
 					})
 				else
 					await environment.update({
 						f_container_ip: ipAdresses.container,
 						f_database_ip: ipAdresses.database,
-						f_url: "http://" + url
+						f_url: "https://" + url
 					})
 
 				stacksDone.push(stack)
@@ -100,6 +123,7 @@ module.exports = () => {
 	})().then(_ => {
 		return true;
 	}).catch(err => {
-		console.error("ERROR WHILE UPDATING ENVIRONMENT LIST:", err.message)
+		console.error("ERROR WHILE UPDATING ENVIRONMENT LIST");
+		console.error(err);
 	})
 };

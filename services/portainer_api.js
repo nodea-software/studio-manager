@@ -1,16 +1,15 @@
 const request = require('request-promise');
 const json2yaml = require('json2yaml');
-const models = require('../models/')
+const models = require('../models/');
 
-exports.generateStack = async (stackName, containerIP, databaseIP, image, dbImage) => {
+let token = null;
 
-    console.log("generateStack");
+async function authenticate(conf) {
 
-    let conf = await models.E_configuration.findOne({
-        where: {
-            id: 1
-        }
-    });
+    if(token && token != '')
+        return token;
+
+    console.log('authenticate');
 
     let callResults = await request({
         uri: conf.f_portainer_api_url + "/auth",
@@ -26,85 +25,122 @@ exports.generateStack = async (stackName, containerIP, databaseIP, image, dbImag
     });
 
     // Full token
-    let token = "Bearer "+ callResults.jwt;
+    token = "Bearer "+ callResults.jwt;
+}
+
+exports.generateStack = async (stackName, network, containerIP, databaseIP, image, dbImage) => {
+
+    console.log("generateStack");
+
+    let conf = await models.E_configuration.findOne({
+        where: {
+            id: 1
+        }
+    });
+
+    await authenticate(conf);
 
     let composeContent = json2yaml.stringify({
-        "version": "2",
+        "version": "3.3",
         "services": {
-            "newmips": {
-                "depends_on": [
-                    "database"
-                ],
+            "nodea": {
+                "container_name": stackName + "_app",
+                "image": "nodeasoftware/nodea:" + image,
+                "restart": "always",
                 "links": [
-                    "database"
+                    "database:database"
                 ],
-                "image": "dockside/"+image,
                 "networks": {
-                    "proxy": {
+                    [network]: {
                         "ipv4_address": containerIP
                     }
                 },
-                "restart": "always",
                 "volumes": [
-                    "workspace_data:/usr/src/app/workspace",
-                    "/home/ubuntu/portainer/traefik/rules:/usr/src/app/workspace/rules"
+                    "app:/app",
                 ],
                 "environment": {
-                    "HOSTNAME": stackName + conf.f_studio_domain.replace(/\./g, "-"),
+                    "NODEA_ENV": "studio",
+                    "HOSTNAME": stackName + "-" + conf.f_studio_domain.replace(/\./g, "-"),
+                    "PROTOCOL": "http",
+                    "PORT": conf.f_default_env_port,
+                    "AUTH": conf.f_default_env_auth,
+                    "SUPPORT_CHAT": conf.f_default_env_support_chat,
+                    "OPEN_SIGNUP": conf.f_default_env_open_signup,
                     "SUB_DOMAIN": stackName,
                     "DOMAIN_STUDIO": conf.f_studio_domain,
                     "DOMAIN_CLOUD": conf.f_cloud_domain,
-                    "GITLAB_HOME": conf.f_gitlab_url,
+                    "SERVER_IP": containerIP,
+                    "DATABASE_IP": "database",
+                    "DATABASE_USER": "nodea",
+                    "DATABASE_PWD": "nodea",
+                    "DATABASE_NAME": "nodea",
+                    "PORTAINER_URL": conf.f_portainer_api_url,
+                    "PORTAINER_LOGIN": conf.f_portainer_login,
+                    "PORTAINER_PWD": conf.f_portainer_password,
+                    "GITLAB_PROTOCOL": conf.f_gitlab_url,
+                    "GITLAB_URL": conf.f_gitlab_url,
+                    "GITLAB_SSHURL": "git@gitlab.nodea.studio",
                     "GITLAB_LOGIN": conf.f_gitlab_login,
                     "GITLAB_PRIVATE_TOKEN": conf.f_gitlab_private_token,
-                    "SERVER_IP": containerIP,
-                    "DATABASE_IP": databaseIP,
-                    "NPS_ENV": 'cloud'
+                    "MATTERMOST_API_URL": conf.f_default_env_chat_api_url,
+                    "MATTERMOST_TEAM": conf.f_default_env_chat_team,
+                    "MATTERMOST_SUPPORT_MEMBERS": conf.f_default_env_chat_support_members,
+                    "MATTERMOST_LOGIN": conf.f_default_env_chat_login,
+                    "MATTERMOST_PWD": conf.f_default_env_chat_pwd
+
                 },
                 "labels": [
+                    "nodea=true", // Needed flag for studio manager
                     "traefik.enable=true",
-                    "traefik.frontend.rule=Host:"+ stackName + "." + conf.f_studio_domain,
-                    "traefik.port=1337"
+                    "traefik.docker.network=" + network,
+                    "traefik.http.routers." + stackName + ".rule=Host(`" + stackName + '.' + conf.f_studio_domain + "`)",
+                    "traefik.http.routers." + stackName + ".entrypoints=websecure",
+                    "traefik.http.services." + stackName + ".loadbalancer.server.port=1337",
+                    "traefik.http.routers." + stackName + ".service=" + stackName + "",
+                    "traefik.http.routers." + stackName + ".tls=true",
+                    "traefik.http.routers." + stackName + ".tls.options=intermediate@file",
+                    "traefik.http.routers." + stackName + ".middlewares=secure-headers@file"
                 ]
             },
             "database": {
-                "image": "dockside/"+dbImage,
+                "container_name": stackName + "_database",
+                "image": dbImage,
+                "restart": "always",
                 "networks": {
-                    "proxy": {
+                    [network]: {
                         "ipv4_address": databaseIP
                     }
                 },
                 "volumes": [
-                    "database_data:/var/lib/mysql"
+                    "db_data:/var/lib/mysql"
                 ],
-                "restart": "always",
                 "environment": {
-                    "MYSQL_DATABASE": "newmips",
-                    "MYSQL_USER": "newmips",
-                    "MYSQL_PASSWORD": "newmips",
-                    "MYSQL_ROOT_PASSWORD": "P@ssw0rd+",
+                    "MYSQL_DATABASE": "nodea",
+                    "MYSQL_USER": "nodea",
+                    "MYSQL_PASSWORD": "nodea",
+                    "MYSQL_ROOT_PASSWORD": "nodea",
+                    "MYSQL_AIO": 0,
                     "PG_DATA": "/var/lib/postgresql/data/pgdata",
-                    "POSTGRES_DB": "newmips",
-                    "POSTGRES_USER": "newmips",
-                    "POSTGRES_PASSWORD": "newmips",
-                    "POSTGRES_ROOT_PASSWORD": "P@ssw0rd+"
-                }
+                    "POSTGRES_DB": "nodea",
+                    "POSTGRES_USER": "nodea",
+                    "POSTGRES_PASSWORD": "nodea",
+                    "POSTGRES_ROOT_PASSWORD": "nodea"
+                },
+                "labels": [
+                    "nodea=true" // Needed flag for studio manager
+                ]
             }
         },
         "networks": {
-            "proxy": {
+            [network]: {
                 "external": {
-                    "name": "proxy"
+                    "name": network
                 }
             }
         },
         "volumes": {
-            "database_data": {
-                "driver": "local"
-            },
-            "workspace_data": {
-                "driver": "local"
-            }
+            "app": {},
+            "db_data": {}
         }
     });
 
@@ -133,7 +169,7 @@ exports.generateStack = async (stackName, containerIP, databaseIP, image, dbImag
     return generateCall;
 }
 
-exports.getAvailabeImages = async (stackName, containerIP, databaseIP) => {
+exports.getAvailabeImages = async () => {
 
     console.log("getAvailabeImages");
 
@@ -143,21 +179,7 @@ exports.getAvailabeImages = async (stackName, containerIP, databaseIP) => {
         }
     });
 
-    let callResults = await request({
-        uri: conf.f_portainer_api_url + "/auth",
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: {
-            Username: conf.f_portainer_login,
-            Password: conf.f_portainer_password
-        },
-        json: true // Automatically stringifies the body to JSON
-    });
-
-    // Full token
-    let token = "Bearer "+ callResults.jwt;
+    await authenticate(conf);
 
     let allImages = await request({
         uri: conf.f_portainer_api_url + "/endpoints/1/docker/images/json",
@@ -169,8 +191,62 @@ exports.getAvailabeImages = async (stackName, containerIP, databaseIP) => {
         json: true
     });
 
-    let newmipsImages = allImages.filter(x => x.RepoTags[0].indexOf('dockside/newmips') != -1).map(x => x.RepoTags[0].replace('dockside/', ''));
-    return newmipsImages;
+    const imageArray = [];
+
+    for (var i = 0; i < allImages.length; i++) {
+        imageArray.push(...allImages[i].RepoTags);
+    }
+
+    return imageArray;
+}
+
+exports.getDockerhubImages = async () => {
+
+    console.log("getDockerhubImages");
+
+    let allImages = await request({
+        uri: "https://hub.docker.com/v2/repositories/nodeasoftware/nodea/tags",
+        method: "GET",
+        json: true
+    });
+
+    return allImages.results.map(x => x.name);
+}
+
+exports.getNetworks = async () => {
+
+    console.log("getNetworks");
+
+    let conf = await models.E_configuration.findOne({
+        where: {
+            id: 1
+        }
+    });
+
+    await authenticate(conf);
+
+    let allNetworks = await request({
+        uri: conf.f_portainer_api_url + "/endpoints/1/docker/networks",
+        method: "GET",
+        headers: {
+            'Content-Type': 'multipart/form-data',
+            'Authorization': token
+        },
+        json: true
+    });
+
+    allNetworks = allNetworks.filter(x => x.Name.includes('proxy'));
+
+    const networks = [];
+
+    for (var i = 0; i < allNetworks.length; i++) {
+        networks.push({
+            name: allNetworks[i].Name,
+            root_ip: allNetworks[i].IPAM.Config[0].Gateway.slice(0, -2)
+        })
+    }
+
+    return networks;
 }
 
 exports.deleteStack = async (stackName) => {
@@ -183,21 +259,7 @@ exports.deleteStack = async (stackName) => {
         }
     });
 
-    let tokenCall = await request({
-        uri: conf.f_portainer_api_url + "/auth",
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: {
-            Username: conf.f_portainer_login,
-            Password: conf.f_portainer_password
-        },
-        json: true // Automatically stringifies the body to JSON
-    });
-
-    // Full token
-    let token = "Bearer "+ tokenCall.jwt;
+    await authenticate(conf);
 
     // Getting stack to delete
     let stackList = await request({

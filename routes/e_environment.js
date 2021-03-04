@@ -28,7 +28,7 @@ var enums_radios = require('../utils/enum_radio.js');
 // Winston logger
 var logger = require('../utils/logger');
 
-const portainerAPI = require("../services/portainer_api")
+const portainerAPI = require("../services/portainer_api");
 
 router.get('/list', block_access.actionAccessMiddleware("environment", "read"), function(req, res) {
     res.render('e_environment/list');
@@ -182,46 +182,23 @@ router.get('/create_form', block_access.actionAccessMiddleware("environment", "c
             }
         }
 
-        // Get new valid IP
-        models.E_environment.findAll().then(environments => {
-
-            let lastIP = 0, splitIP, ipStructure = null;
-
-            for (env of environments) {
-                splitIPContainer = env.f_container_ip.split(".");
-                splitIPDatabase = env.f_database_ip.split(".");
-                if(!ipStructure)
-                    ipStructure = env.f_container_ip.split(".").slice(0, -1).join(".");
-
-                if(lastIP < splitIPContainer[splitIPContainer.length - 1])
-                    lastIP = splitIPContainer[splitIPContainer.length - 1]
-
-                if(lastIP < splitIPDatabase[splitIPDatabase.length - 1])
-                    lastIP = splitIPDatabase[splitIPDatabase.length - 1]
-            }
-
-            data.containerIP = ipStructure + "." + ++lastIP;
-            data.databaseIP = ipStructure + "." + ++lastIP;
-
+        portainerAPI.getDockerhubImages().then(nodeaImages => {
+            data.allImages = nodeaImages;
             portainerAPI.getAvailabeImages().then(allImages => {
-                data.allImages = allImages.filter(x => x.indexOf('mysql') == -1 && x.indexOf('postgres') == -1 );
-                data.allImagesDB = allImages.filter(x => x.indexOf('mysql') != -1 || x.indexOf('postgres') != -1 );
-                // Get association data that needed to be load directly here (to do so set loadOnStart param to true in options).
-                entity_helper.getLoadOnStartData(data, options).then(function(data) {
-                    var view = req.query.ajax ? 'e_environment/create_fields' : 'e_environment/create';
-                    res.render(view, data);
-                }).catch(function(err) {
-                    entity_helper.error(err, req, res, '/environment/create_form', "e_environment");
-                })
+                data.allImagesDB = allImages.filter(x => x.indexOf('database') != -1);
+                portainerAPI.getNetworks().then(allNetworks => {
+                    data.allNetworks = allNetworks;
+                    res.render('e_environment/create', data);
+                });
             });
-        })
-    })
+        });
+    });
 });
 
 router.post('/create', block_access.actionAccessMiddleware("environment", "create"), function(req, res) {
 
     req.body.f_name = attr_helper.clearString(req.body.f_name).replace(/[-_.]/g, "").toLowerCase();
-    portainerAPI.generateStack(req.body.f_name, req.body.f_container_ip, req.body.f_database_ip, req.body.f_image, req.body.f_db_image).then(err => {
+    portainerAPI.generateStack(req.body.f_name, req.body.network, req.body.f_container_ip, req.body.f_database_ip, req.body.f_image, req.body.f_db_image).then(err => {
 
         var createObject = model_builder.buildForRoute(attributes, options, req.body);
 
@@ -258,6 +235,51 @@ router.post('/create', block_access.actionAccessMiddleware("environment", "creat
         }];
         return res.redirect("/environment/create_form")
     })
+});
+
+router.get('/getlastip/:network', block_access.actionAccessMiddleware("environment", "create"), function(req, res) {
+
+    portainerAPI.getNetworks().then(allNetworks => {
+
+        const network = allNetworks.filter(x => x.name == req.params.network)[0];
+        // Get new valid IP
+        models.E_environment.findAll({
+            where: {
+                f_container_ip: {
+                    $like: network.root_ip + "%"
+                }
+            }
+        }).then(environments => {
+
+            let lastIP = 10, splitIP, ipStructure = network.root_ip;
+
+            for (env of environments) {
+                splitIPContainer = env.f_container_ip.split(".");
+                splitIPDatabase = env.f_database_ip.split(".");
+                if(!ipStructure)
+                    ipStructure = env.f_container_ip.split(".").slice(0, -1).join(".");
+
+                if(lastIP < splitIPContainer[splitIPContainer.length - 1])
+                    lastIP = splitIPContainer[splitIPContainer.length - 1]
+
+                if(lastIP < splitIPDatabase[splitIPDatabase.length - 1])
+                    lastIP = splitIPDatabase[splitIPDatabase.length - 1]
+            }
+
+            let ipContainer = ipStructure + "." + ++lastIP;
+            if(lastIP >= 100) // Block if > 100 Ip is not valid
+                ipContainer = 'No more IP available !';
+
+            let ipDatabase = ipStructure + "." + ++lastIP;
+            if(lastIP >= 100) // Block if > 100 Ip is not valid
+                ipDatabase = 'No more IP available !'
+
+            res.status(200).send({
+                containerIP: ipContainer,
+                databaseIP: ipDatabase
+            });
+        });
+    });
 });
 
 router.get('/loadtab/:id/:alias', block_access.actionAccessMiddleware('environment', 'read'), function(req, res) {
@@ -610,49 +632,49 @@ router.post('/fieldset/:alias/add', block_access.actionAccessMiddleware("environ
     });
 });
 
-router.post('/delete', block_access.actionAccessMiddleware("environment", "delete"), function(req, res) {
-    var id_e_environment = parseInt(req.body.id);
+// router.post('/delete', block_access.actionAccessMiddleware("environment", "delete"), function(req, res) {
+//     var id_e_environment = parseInt(req.body.id);
 
-    models.E_environment.findOne({
-        where: {
-            id: id_e_environment
-        }
-    }).then(function(deleteObject) {
-        if (!deleteObject) {
-            data.error = 404;
-            logger.debug("No data entity found.");
-            return res.render('common/error', data);
-        }
+//     models.E_environment.findOne({
+//         where: {
+//             id: id_e_environment
+//         }
+//     }).then(function(deleteObject) {
+//         if (!deleteObject) {
+//             data.error = 404;
+//             logger.debug("No data entity found.");
+//             return res.render('common/error', data);
+//         }
 
-        portainerAPI.deleteStack(deleteObject.f_name).then(err => {
+//         portainerAPI.deleteStack(deleteObject.f_name).then(err => {
 
-            deleteObject.destroy().then(function() {
-                req.session.toastr = [{
-                    message: 'message.delete.success',
-                    level: "success"
-                }];
+//             deleteObject.destroy().then(function() {
+//                 req.session.toastr = [{
+//                     message: 'message.delete.success',
+//                     level: "success"
+//                 }];
 
-                var redirect = '/environment/list';
-                if (typeof req.body.associationFlag !== 'undefined')
-                    redirect = '/' + req.body.associationUrl + '/show?id=' + req.body.associationFlag + '#' + req.body.associationAlias;
-                res.redirect(redirect);
-                entity_helper.removeFiles("e_environment", deleteObject, attributes);
-            }).catch(function(err) {
-                entity_helper.error(err, req, res, '/environment/list', "e_environment");
-            });
+//                 var redirect = '/environment/list';
+//                 if (typeof req.body.associationFlag !== 'undefined')
+//                     redirect = '/' + req.body.associationUrl + '/show?id=' + req.body.associationFlag + '#' + req.body.associationAlias;
+//                 res.redirect(redirect);
+//                 entity_helper.removeFiles("e_environment", deleteObject, attributes);
+//             }).catch(function(err) {
+//                 entity_helper.error(err, req, res, '/environment/list', "e_environment");
+//             });
 
-        }).catch(function(err) {
-            console.error("ERROR WHILE DELETING STUDIO STACK")
-            console.log(err);
-            req.session.toastr = [{
-                message: "Une erreur s'est produite lors de la suppression de la stack sur Portainer.",
-                level: "error"
-            }];
-            return res.redirect("/environment/list");
-        });
-    }).catch(function(err) {
-        entity_helper.error(err, req, res, '/environment/list', "e_environment");
-    });
-});
+//         }).catch(function(err) {
+//             console.error("ERROR WHILE DELETING STUDIO STACK")
+//             console.log(err);
+//             req.session.toastr = [{
+//                 message: "Une erreur s'est produite lors de la suppression de la stack sur Portainer.",
+//                 level: "error"
+//             }];
+//             return res.redirect("/environment/list");
+//         });
+//     }).catch(function(err) {
+//         entity_helper.error(err, req, res, '/environment/list', "e_environment");
+//     });
+// });
 
 module.exports = router;

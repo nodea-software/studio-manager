@@ -76,6 +76,20 @@
                 firstElementFocus(idx+1);
         }
         firstElementFocus();
+
+        /* Ajax network */
+        $(document).on('change', 'select[name="network"]', function() {
+            $.ajax({
+                url: "/environment/getlastip/" + $(this).val(),
+                method: "GET",
+                success: function(data) {
+                    $('input[name="f_container_ip"]').val(data.containerIP);
+                    $('input[name="f_database_ip"]').val(data.databaseIP);
+                }
+            })
+        });
+
+        $('select[name="network"]').trigger('change');
     });
 </script>
 {/custom_js}

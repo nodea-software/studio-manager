@@ -10,7 +10,19 @@
             <input class="form-control input" placeholder='{#__ key="entity.e_environment.f_name" /}' name="f_name" value="" type="text" maxlength="255">
         </div>
     </div>
-    <div data-field="f_container_ip" class="fieldLineHeight col-xs-12">
+    <div data-field="network" class="fieldLineHeight col-xs-12">
+        <div class="form-group">
+            <label for="network">
+                Network
+            </label>
+            <select class="form-control" name="network">
+                {#allNetworks}
+                    <option value="{name}">{name} ({root_ip})</option>
+                {/allNetworks}
+            </select>
+        </div>
+    </div>
+    <div data-field="f_container_ip" class="fieldLineHeight col-xs-12 col-sm-6">
         <div class="form-group">
             <label for="f_container_ip">
                 {#__ key="entity.e_environment.f_container_ip"/}&nbsp;
@@ -18,10 +30,10 @@
                 <i data-field="f_container_ip" class="inline-help fa fa-info-circle" style="color: #1085EE"></i>
                 {/inline_help}
             </label>
-            <input class="form-control input" placeholder='{#__ key="entity.e_environment.f_container_ip" /}' name="f_container_ip" value="{containerIP}" type="text" maxlength="255">
+            <input class="form-control input" placeholder='{#__ key="entity.e_environment.f_container_ip" /}' name="f_container_ip" value="{containerIP}" type="text" maxlength="255" readonly>
         </div>
     </div>
-    <div data-field="f_database_ip" class="fieldLineHeight col-xs-12">
+    <div data-field="f_database_ip" class="fieldLineHeight col-xs-12 col-sm-6">
         <div class="form-group">
             <label for="f_database_ip">
                 {#__ key="entity.e_environment.f_database_ip"/}&nbsp;
@@ -29,13 +41,13 @@
                 <i data-field="f_database_ip" class="inline-help fa fa-info-circle" style="color: #1085EE"></i>
                 {/inline_help}
             </label>
-            <input class="form-control input" placeholder='{#__ key="entity.e_environment.f_database_ip" /}' name="f_database_ip" value="{databaseIP}" type="text" maxlength="255">
+            <input class="form-control input" placeholder='{#__ key="entity.e_environment.f_database_ip" /}' name="f_database_ip" value="{databaseIP}" type="text" maxlength="255" readonly>
         </div>
     </div>
     <div data-field="f_image" class="fieldLineHeight col-xs-12">
         <div class="form-group">
             <label for="f_image">
-                Images
+                Images (From dockerhub nodeasoftware/nodea)
             </label>
             <select class="form-control input" name="f_image">
                 {#allImages}
@@ -47,7 +59,7 @@
     <div data-field="f_db_image" class="fieldLineHeight col-xs-12">
         <div class="form-group">
             <label for="f_db_image">
-                Database Image
+                Database Image (From portainer)
             </label>
             <select class="form-control input" name="f_db_image">
                 {#allImagesDB}

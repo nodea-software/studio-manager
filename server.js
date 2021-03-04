@@ -381,7 +381,7 @@ models.sequelize.sync({logging: false, hooks: false}).then(() => {
 		block_access.accessFileManagment();
 
         // Update env cron
-        new CronJob('00 */1 * * * *', function() {
+        new CronJob('*/10 * * * * *', function() {
             require('./services/update_environment')();
         }, null, true, 'Europe/Paris');
 

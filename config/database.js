@@ -4,8 +4,8 @@ var databaseConf = {
     develop: {
         host: '127.0.0.1',
         port: '3306',
-        user: '',
-        password: '',
+        user: 'root',
+        password: '2653',
         database: 'studio-manager',
         dialect: 'mysql'
     },
