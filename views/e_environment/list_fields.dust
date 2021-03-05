@@ -20,6 +20,21 @@
             <th data-field="f_database_ip" data-col="f_database_ip" data-type="string">
                 {#__ key="entity.e_environment.f_database_ip"/}
             </th>
+            <th data-field="f_port" data-col="f_port" data-type="string">
+                Port
+            </th>
+            <th data-field="f_auth" data-col="f_auth" data-type="string">
+                Auth
+            </th>
+            <th data-field="f_support_chat" data-col="f_support_chat" data-type="boolean">
+                Support chat
+            </th>
+            <th data-field="f_open_signup" data-col="f_open_signup" data-type="boolean">
+                Open signup
+            </th>
+            <th data-field="f_chat_api_url" data-col="f_chat_api_url" data-type="string">
+                Chat URL
+            </th>
         </tr>
     </thead>
     <thead class="filters">
@@ -41,6 +56,21 @@
             </th>
             <th data-field="f_database_ip" data-col="f_database_ip" data-type="string">
                 {#__ key="entity.e_environment.f_database_ip"/}
+            </th>
+            <th data-field="f_port" data-col="f_port" data-type="string">
+                Port
+            </th>
+            <th data-field="f_auth" data-col="f_auth" data-type="string">
+                Auth
+            </th>
+            <th data-field="f_support_chat" data-col="f_support_chat" data-type="boolean">
+                Support chat
+            </th>
+            <th data-field="f_open_signup" data-col="f_open_signup" data-type="boolean">
+                Open signup
+            </th>
+            <th data-field="f_chat_api_url" data-col="f_chat_api_url" data-type="string">
+                Chat URL
             </th>
         </tr>
     </thead>

@@ -28,9 +28,16 @@ async function authenticate(conf) {
     token = "Bearer "+ callResults.jwt;
 }
 
-exports.generateStack = async (stackName, network, containerIP, databaseIP, image, dbImage) => {
+exports.generateStack = async (body) => {
 
     console.log("generateStack");
+
+    const stackName = body.f_name;
+    const network = body.network;
+    const containerIP = body.f_container_ip;
+    const databaseIP = body.f_database_ip;
+    const image = body.f_image;
+    const dbImage = body.f_db_image;
 
     let conf = await models.E_configuration.findOne({
         where: {
@@ -62,10 +69,10 @@ exports.generateStack = async (stackName, network, containerIP, databaseIP, imag
                     "NODEA_ENV": "studio",
                     "HOSTNAME": stackName + "-" + conf.f_studio_domain.replace(/\./g, "-"),
                     "PROTOCOL": "http",
-                    "PORT": conf.f_default_env_port,
-                    "AUTH": conf.f_default_env_auth,
-                    "SUPPORT_CHAT": conf.f_default_env_support_chat,
-                    "OPEN_SIGNUP": conf.f_default_env_open_signup,
+                    "PORT": body.f_port,
+                    "AUTH": body.f_auth,
+                    "SUPPORT_CHAT": body.f_support_chat,
+                    "OPEN_SIGNUP": body.f_open_signup,
                     "SUB_DOMAIN": stackName,
                     "DOMAIN_STUDIO": conf.f_studio_domain,
                     "DOMAIN_CLOUD": conf.f_cloud_domain,
@@ -82,11 +89,11 @@ exports.generateStack = async (stackName, network, containerIP, databaseIP, imag
                     "GITLAB_SSHURL": "git@gitlab.nodea.studio",
                     "GITLAB_LOGIN": conf.f_gitlab_login,
                     "GITLAB_PRIVATE_TOKEN": conf.f_gitlab_private_token,
-                    "MATTERMOST_API_URL": conf.f_default_env_chat_api_url,
-                    "MATTERMOST_TEAM": conf.f_default_env_chat_team,
-                    "MATTERMOST_SUPPORT_MEMBERS": conf.f_default_env_chat_support_members,
-                    "MATTERMOST_LOGIN": conf.f_default_env_chat_login,
-                    "MATTERMOST_PWD": conf.f_default_env_chat_pwd
+                    "MATTERMOST_API_URL": body.f_chat_api_url,
+                    "MATTERMOST_TEAM": body.f_chat_team,
+                    "MATTERMOST_SUPPORT_MEMBERS": body.f_chat_support_members,
+                    "MATTERMOST_LOGIN": body.f_chat_login,
+                    "MATTERMOST_PWD": body.f_chat_pwd
 
                 },
                 "labels": [
@@ -171,8 +178,6 @@ exports.generateStack = async (stackName, network, containerIP, databaseIP, imag
 
 exports.getAvailabeImages = async () => {
 
-    console.log("getAvailabeImages");
-
     let conf = await models.E_configuration.findOne({
         where: {
             id: 1
@@ -202,8 +207,6 @@ exports.getAvailabeImages = async () => {
 
 exports.getDockerhubImages = async () => {
 
-    console.log("getDockerhubImages");
-
     let allImages = await request({
         uri: "https://hub.docker.com/v2/repositories/nodeasoftware/nodea/tags",
         method: "GET",
@@ -214,8 +217,6 @@ exports.getDockerhubImages = async () => {
 }
 
 exports.getNetworks = async () => {
-
-    console.log("getNetworks");
 
     let conf = await models.E_configuration.findOne({
         where: {
@@ -249,74 +250,74 @@ exports.getNetworks = async () => {
     return networks;
 }
 
-exports.deleteStack = async (stackName) => {
+// exports.deleteStack = async (stackName) => {
 
-    console.log("deleteStack");
+//     console.log("deleteStack");
 
-    let conf = await models.E_configuration.findOne({
-        where: {
-            id: 1
-        }
-    });
+//     let conf = await models.E_configuration.findOne({
+//         where: {
+//             id: 1
+//         }
+//     });
 
-    await authenticate(conf);
+//     await authenticate(conf);
 
-    // Getting stack to delete
-    let stackList = await request({
-        uri: conf.f_portainer_api_url + "/stacks",
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': token
-        },
-        json: true // Automatically stringifies the body to JSON
-    });
+//     // Getting stack to delete
+//     let stackList = await request({
+//         uri: conf.f_portainer_api_url + "/stacks",
+//         method: 'GET',
+//         headers: {
+//             'Content-Type': 'application/json',
+//             'Authorization': token
+//         },
+//         json: true // Automatically stringifies the body to JSON
+//     });
 
-    // Looking for stack with given stackName
-    stackList = stackList.filter(x =>x.Name == stackName);
+//     // Looking for stack with given stackName
+//     stackList = stackList.filter(x =>x.Name == stackName);
 
-    if(stackList.length == 0)
-        throw new Error("Unable to find the stack "+stackName+" on portainer.")
+//     if(stackList.length == 0)
+//         throw new Error("Unable to find the stack "+stackName+" on portainer.")
 
-    await request.delete({
-        uri: conf.f_portainer_api_url + "/stacks/"+stackList[0].Id,
-        headers: {
-            'Content-Type': 'multipart/form-data',
-            'Authorization': token
-        },
-        json: true // Automatically stringifies the body to JSON
-    });
+//     await request.delete({
+//         uri: conf.f_portainer_api_url + "/stacks/"+stackList[0].Id,
+//         headers: {
+//             'Content-Type': 'multipart/form-data',
+//             'Authorization': token
+//         },
+//         json: true // Automatically stringifies the body to JSON
+//     });
 
-    let allVolumes = await request({
-        uri: conf.f_portainer_api_url + "/endpoints/1/docker/volumes",
-        method: "GET",
-        headers: {
-            'Content-Type': 'multipart/form-data',
-            'Authorization': token
-        },
-        json: true
-    });
+//     let allVolumes = await request({
+//         uri: conf.f_portainer_api_url + "/endpoints/1/docker/volumes",
+//         method: "GET",
+//         headers: {
+//             'Content-Type': 'multipart/form-data',
+//             'Authorization': token
+//         },
+//         json: true
+//     });
 
-    let promises = [];
+//     let promises = [];
 
-    // Deleting linked volumes
-    let volume;
-    for (var i = 0; i < allVolumes.Volumes.length; i++) {
-        volume = allVolumes.Volumes[i];
-        if(volume.Name.indexOf(stackName + "_workspace") != -1 || volume.Name.indexOf(stackName + "_database") != -1){
-            promises.push(request({
-                uri: conf.f_portainer_api_url + "/endpoints/1/docker/volumes/"+volume.Name,
-                method: "DELETE",
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                    'Authorization': token
-                },
-                json: true
-            }));
-        }
-    }
+//     // Deleting linked volumes
+//     let volume;
+//     for (var i = 0; i < allVolumes.Volumes.length; i++) {
+//         volume = allVolumes.Volumes[i];
+//         if(volume.Name.indexOf(stackName + "_workspace") != -1 || volume.Name.indexOf(stackName + "_database") != -1){
+//             promises.push(request({
+//                 uri: conf.f_portainer_api_url + "/endpoints/1/docker/volumes/"+volume.Name,
+//                 method: "DELETE",
+//                 headers: {
+//                     'Content-Type': 'multipart/form-data',
+//                     'Authorization': token
+//                 },
+//                 json: true
+//             }));
+//         }
+//     }
 
-    await Promise.all(promises);
+//     await Promise.all(promises);
 
-    return ;
-}
+//     return ;
+// }

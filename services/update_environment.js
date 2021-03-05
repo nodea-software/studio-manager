@@ -37,6 +37,9 @@ module.exports = () => {
 			}
 		});
 
+		if(!conf.f_portainer_api_url || conf.f_portainer_api_url == '')
+			return;
+
 		await authenticate(conf);
 
 		let allContainers = await request({
@@ -124,6 +127,6 @@ module.exports = () => {
 		return true;
 	}).catch(err => {
 		console.error("ERROR WHILE UPDATING ENVIRONMENT LIST");
-		console.error(err);
+		console.error(err.message);
 	})
 };

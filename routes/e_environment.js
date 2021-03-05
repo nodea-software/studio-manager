@@ -182,14 +182,13 @@ router.get('/create_form', block_access.actionAccessMiddleware("environment", "c
             }
         }
 
+        data.conf = configuration;
+
         portainerAPI.getDockerhubImages().then(nodeaImages => {
             data.allImages = nodeaImages;
-            portainerAPI.getAvailabeImages().then(allImages => {
-                data.allImagesDB = allImages.filter(x => x.indexOf('database') != -1);
-                portainerAPI.getNetworks().then(allNetworks => {
-                    data.allNetworks = allNetworks;
-                    res.render('e_environment/create', data);
-                });
+            portainerAPI.getNetworks().then(allNetworks => {
+                data.allNetworks = allNetworks;
+                res.render('e_environment/create', data);
             });
         });
     });
@@ -198,7 +197,7 @@ router.get('/create_form', block_access.actionAccessMiddleware("environment", "c
 router.post('/create', block_access.actionAccessMiddleware("environment", "create"), function(req, res) {
 
     req.body.f_name = attr_helper.clearString(req.body.f_name).replace(/[-_.]/g, "").toLowerCase();
-    portainerAPI.generateStack(req.body.f_name, req.body.network, req.body.f_container_ip, req.body.f_database_ip, req.body.f_image, req.body.f_db_image).then(err => {
+    portainerAPI.generateStack(req.body).then(err => {
 
         var createObject = model_builder.buildForRoute(attributes, options, req.body);
 

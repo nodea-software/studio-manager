@@ -59,13 +59,107 @@
     <div data-field="f_db_image" class="fieldLineHeight col-xs-12">
         <div class="form-group">
             <label for="f_db_image">
-                Database Image (From portainer)
+                Database Image
             </label>
             <select class="form-control input" name="f_db_image">
-                {#allImagesDB}
-                    <option value='{.}'>{.}</option>
-                {/allImagesDB}
+                <option value='nodeasoftware/nodea-database-mariadb:latest'>nodeasoftware/nodea-database-mariadb:latest</option>
+                <option value='nodeasoftware/nodea-database-mysql:latest'>nodeasoftware/nodea-database-mysql:latest</option>
+                <option value='nodeasoftware/nodea-database-postgres:latest'>nodeasoftware/nodea-database-postgres:latest</option>
             </select>
+        </div>
+    </div>
+    <div class="col-xs-12 text-center">
+        <div class="form-group form-title">
+            <h3>Env configuration</h3>
+        </div>
+    </div>
+    <div data-field="f_default_env_port" class="fieldLineHeight col-xs-12 col-sm-6">
+        <div class="form-group">
+            <label for="f_default_env_port">
+                Port
+            </label>
+            <input class="form-control input" placeholder='port' name="f_port" value="{conf.f_default_env_port}" type="text" maxlength="255">
+        </div>
+    </div>
+    <div data-field="f_default_env_auth" class="fieldLineHeight col-xs-12 col-sm-6">
+        <div class="form-group">
+            <label for="f_default_env_auth">
+                Authentification
+            </label>
+            <input class="form-control input" placeholder='Authentification' name="f_auth" value="{conf.f_default_env_auth}" type="text" maxlength="255">
+        </div>
+    </div>
+    <div data-field="f_default_env_support_chat" class="fieldLineHeight col-xs-12 col-sm-6">
+        <div class="form-group">
+            <label for="f_default_env_support_chat">
+                Chat enabled
+            </label>
+            &nbsp;
+            <br>
+            {@ifTrue key=conf.f_default_env_support_chat}
+                <input class="form-control input" name="f_support_chat" value="{conf.f_default_env_support_chat}" type="checkbox" checked="">
+            {:else}
+                <input class="form-control input" name="f_support_chat" value="{conf.f_default_env_support_chat}" type="checkbox">
+            {/ifTrue}
+        </div>
+    </div>
+    <div data-field="f_default_env_open_signup" class="fieldLineHeight col-xs-12 col-sm-6">
+        <div class="form-group">
+            <label for="f_default_env_open_signup">
+                Open signup
+            </label>
+            &nbsp;
+            <br>
+            {@ifTrue key=conf.f_default_env_open_signup}
+                <input class="form-control input" name="f_open_signup" value="{conf.f_default_env_open_signup}" type="checkbox" checked="">
+            {:else}
+                <input class="form-control input" name="f_open_signup" value="{conf.f_default_env_open_signup}" type="checkbox">
+            {/ifTrue}
+        </div>
+    </div>
+    <div class="col-xs-12 text-center">
+        <div class="form-group form-title">
+            <h3>Chat configuration</h3>
+        </div>
+    </div>
+    <div data-field="f_default_env_chat_api_url" class="fieldLineHeight col-xs-12 col-sm-4">
+        <div class="form-group">
+            <label for="f_default_env_chat_api_url">
+                API URL
+            </label>
+            <input class="form-control input" placeholder='port' name="f_chat_api_url" value="{conf.f_default_env_chat_api_url}" type="text" maxlength="255">
+        </div>
+    </div>
+    <div data-field="f_default_env_chat_team" class="fieldLineHeight col-xs-12 col-sm-4">
+        <div class="form-group">
+            <label for="f_default_env_chat_team">
+                Team
+            </label>
+            <input class="form-control input" placeholder='Authentification' name="f_chat_team" value="{conf.f_default_env_chat_team}" type="text" maxlength="255">
+        </div>
+    </div>
+    <div data-field="f_default_env_chat_support_members" class="fieldLineHeight col-xs-12 col-sm-4">
+        <div class="form-group">
+            <label for="f_default_env_chat_support_members">
+                Support Members
+            </label>
+            <input class="form-control input" placeholder='Chat enabled' name="f_chat_support_members" value="{conf.f_default_env_chat_support_members}" type="text" maxlength="255">
+        </div>
+    </div>
+    <div data-field="f_default_env_chat_login" class="fieldLineHeight col-xs-12 col-sm-6">
+        <div class="form-group">
+            <label for="f_default_env_chat_login">
+                Login
+            </label>
+            <input class="form-control input" placeholder='Open signup' name="f_chat_login" value="{conf.f_default_env_chat_login}" type="text" maxlength="255">
+        </div>
+    </div>
+    <div data-field="f_default_env_chat_pwd" class="fieldLineHeight col-xs-12 col-sm-6">
+        <div class="form-group">
+            <label for="f_default_env_chat_pwd">
+                Password
+            </label>
+            <input class="form-control input" placeholder='Open signup' name="f_chat_pwd" value="{conf.f_default_env_chat_pwd}" type="password" maxlength="255">
         </div>
     </div>
 </div>
