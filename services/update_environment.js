@@ -1,11 +1,14 @@
 const models = require('../models/');
 const request = require('request-promise');
+const moment = require('moment');
 
 let token = null;
+let tokenDate = moment();
 
 async function authenticate(conf) {
 
-    if(token && token != '')
+    // Refresh token every 60min
+    if(token && token != '' && moment().diff(tokenDate, 'minutes') <= 60)
         return token;
 
     console.log('authenticate CRON');
@@ -22,6 +25,8 @@ async function authenticate(conf) {
         },
         json: true // Automatically stringifies the body to JSON
     });
+
+    tokenDate = moment();
 
     // Full token
     token = "Bearer " + callResults.jwt;
