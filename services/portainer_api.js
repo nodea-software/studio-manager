@@ -89,7 +89,7 @@ exports.generateStack = async (body) => {
                     "PORTAINER_URL": conf.f_portainer_api_url,
                     "PORTAINER_LOGIN": conf.f_portainer_login,
                     "PORTAINER_PWD": conf.f_portainer_password,
-                    "GITLAB_PROTOCOL": conf.f_gitlab_url,
+                    "GITLAB_PROTOCOL": conf.f_gitlab_protocol,
                     "GITLAB_URL": conf.f_gitlab_url,
                     "GITLAB_SSHURL": "git@gitlab.nodea.studio",
                     "GITLAB_LOGIN": conf.f_gitlab_login,
