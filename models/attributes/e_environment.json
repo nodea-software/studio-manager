@@ -79,11 +79,5 @@
         "newmipsType": "string",
         "defaultValue": null,
         "validate": true
-    },
-    "f_chat_pwd": {
-        "type": "STRING",
-        "newmipsType": "string",
-        "defaultValue": null,
-        "validate": true
     }
 }

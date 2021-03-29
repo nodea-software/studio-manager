@@ -297,16 +297,12 @@ app.use(function(req, res, next) {
 });
 
 // Routes ======================================================================
+const Cryptr = require('cryptr');
+global.__cryptr = new Cryptr(process.env.CRYPT_KEY);
 require('./routes/')(app);
 
 // Api routes ==================================================================
-require('./api/')(app);
-
-app.use(function(req, res, next) {
-	res.header("Access-Control-Allow-Origin", "*");
-	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-	next();
-});
+// require('./api/')(app);
 
 // Handle 404
 app.use(function(req, res) {
@@ -334,8 +330,9 @@ models.sequelize.sync({logging: false, hooks: false}).then(() => {
                 }
             }).then(conf => {
                 if(!conf){
-                    console.log("No existing configuration, creating one...")
+                    console.log("No existing configuration, creating one...");
                     models.E_configuration.create();
+                    console.log("Default configuration ok");
                 }
             })
 

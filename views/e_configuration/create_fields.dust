@@ -56,10 +56,8 @@
     <div data-field="f_gitlab_private_token" class="fieldLineHeight col-xs-12">
         <div class="form-group">
             <label for="f_gitlab_private_token">
-                {#__ key="entity.e_configuration.f_gitlab_private_token"/}&nbsp;
-                {@inline_help field="f_gitlab_private_token"}
-                <i data-field="f_gitlab_private_token" class="inline-help fa fa-info-circle" style="color: #1085EE"></i>
-                {/inline_help}
+                {#__ key="entity.e_configuration.f_gitlab_private_token"/}
+                (Empty = Unchanged)
             </label>
             <input class="form-control input" placeholder='{#__ key="entity.e_configuration.f_gitlab_private_token" /}' name="f_gitlab_private_token" value="" type="text" maxlength="255">
         </div>
@@ -95,9 +93,7 @@
         <div class="form-group">
             <label for="f_portainer_password">
                 {#__ key="entity.e_configuration.f_portainer_password"/}&nbsp;
-                {@inline_help field="f_portainer_password"}
-                <i data-field="f_portainer_password" class="inline-help fa fa-info-circle" style="color: #1085EE"></i>
-                {/inline_help}
+                (Empty = Unchanged)
             </label>
             <input class="form-control input" placeholder='{#__ key="entity.e_configuration.f_portainer_password" /}' name="f_portainer_password" value="" type="text" maxlength="255">
         </div>

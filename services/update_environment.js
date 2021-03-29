@@ -21,7 +21,7 @@ async function authenticate(conf) {
         },
         body: {
             Username: conf.f_portainer_login,
-            Password: conf.f_portainer_password
+            Password: __cryptr.decrypt(conf.f_portainer_password)
         },
         json: true // Automatically stringifies the body to JSON
     });

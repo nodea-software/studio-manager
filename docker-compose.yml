@@ -8,6 +8,7 @@ services:
       - "database:database"
     environment:
       NPS_ENV: "cloud"
+      CRYPT_KEY: "myCryptKey"
     networks:
       - proxy
     volumes:

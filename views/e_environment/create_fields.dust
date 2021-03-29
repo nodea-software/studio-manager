@@ -119,6 +119,59 @@
     </div>
     <div class="col-xs-12 text-center">
         <div class="form-group form-title">
+            <h3>Mail configuration (For generator, not app)</h3>
+        </div>
+    </div>
+    <div data-field="f_mail_host" class="fieldLineHeight col-xs-12 col-sm-4">
+        <div class="form-group">
+            <label for="f_mail_host">
+                Host
+            </label>
+            <input class="form-control input" placeholder='Host' name="f_mail_host" value="{conf.f_default_mail_host}" type="text" maxlength="255">
+        </div>
+    </div>
+    <div data-field="f_mail_port" class="fieldLineHeight col-xs-12 col-sm-4">
+        <div class="form-group">
+            <label for="f_mail_port">
+                Port
+            </label>
+            <input class="form-control input" placeholder='Port' name="f_mail_port" value="{conf.f_default_mail_port}" type="text" maxlength="255">
+        </div>
+    </div>
+    <div data-field="f_mail_user" class="fieldLineHeight col-xs-12 col-sm-4">
+        <div class="form-group">
+            <label for="f_mail_user">
+                User
+            </label>
+            <input class="form-control input" placeholder='User' name="f_mail_user" value="{conf.f_default_mail_user}" type="text" maxlength="255">
+        </div>
+    </div>
+    <div data-field="f_mail_pwd" class="fieldLineHeight col-xs-12 col-sm-4">
+        <div class="form-group">
+            <label for="f_mail_pwd">
+                Password (Empty = Default configuration)
+            </label>
+            <input class="form-control input" placeholder='Password' name="f_mail_pwd" value="" type="text" maxlength="255">
+        </div>
+    </div>
+    <div data-field="f_mail_from" class="fieldLineHeight col-xs-12 col-sm-4">
+        <div class="form-group">
+            <label for="f_mail_from">
+                From
+            </label>
+            <input class="form-control input" placeholder='From' name="f_mail_from" value="{conf.f_default_mail_from}" type="text" maxlength="255">
+        </div>
+    </div>
+    <div data-field="f_mail_env_host" class="fieldLineHeight col-xs-12 col-sm-4">
+        <div class="form-group">
+            <label for="f_mail_env_host">
+                Env host
+            </label>
+            <input class="form-control input" placeholder='Env host' name="f_mail_env_host" value="{conf.f_default_mail_env_host}" type="text" maxlength="255">
+        </div>
+    </div>
+    <div class="col-xs-12 text-center">
+        <div class="form-group form-title">
             <h3>Chat configuration</h3>
         </div>
     </div>
@@ -157,9 +210,9 @@
     <div data-field="f_default_env_chat_pwd" class="fieldLineHeight col-xs-12 col-sm-6">
         <div class="form-group">
             <label for="f_default_env_chat_pwd">
-                Password
+                Password (Empty = Default configuration)
             </label>
-            <input class="form-control input" placeholder='Open signup' name="f_chat_pwd" value="{conf.f_default_env_chat_pwd}" type="password" maxlength="255">
+            <input class="form-control input" placeholder='Open signup' name="f_chat_pwd" value="" type="password" maxlength="255">
         </div>
     </div>
 </div>

@@ -115,5 +115,41 @@
         "newmipsType": "string",
         "defaultValue": null,
         "validate": true
+    },
+    "f_default_mail_host": {
+        "type": "STRING",
+        "newmipsType": "string",
+        "defaultValue": null,
+        "validate": true
+    },
+    "f_default_mail_port": {
+        "type": "STRING",
+        "newmipsType": "string",
+        "defaultValue": null,
+        "validate": true
+    },
+    "f_default_mail_user": {
+        "type": "STRING",
+        "newmipsType": "string",
+        "defaultValue": null,
+        "validate": true
+    },
+    "f_default_mail_pwd": {
+        "type": "STRING",
+        "newmipsType": "string",
+        "defaultValue": null,
+        "validate": true
+    },
+    "f_default_mail_from": {
+        "type": "STRING",
+        "newmipsType": "string",
+        "defaultValue": null,
+        "validate": true
+    },
+    "f_default_mail_env_host": {
+        "type": "STRING",
+        "newmipsType": "string",
+        "defaultValue": null,
+        "validate": true
     }
 }

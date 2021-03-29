@@ -227,7 +227,7 @@ router.post('/create', block_access.actionAccessMiddleware("environment", "creat
 
     }).catch(err => {
         console.error("ERROR WHILE GENERATING STUDIO STACK")
-        console.log(err.message);
+        console.log(err);
         req.session.toastr = [{
             message: "Une erreur s'est produite lors de la génération de la stack sur Portainer.",
             level: "error"
