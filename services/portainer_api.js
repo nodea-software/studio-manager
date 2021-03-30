@@ -55,7 +55,7 @@ exports.generateStack = async (body) => {
     const environment = {
         "NODEA_ENV": "studio",
         "HOSTNAME": stackName + "-" + conf.f_studio_domain.replace(/\./g, "-"),
-        "PROTOCOL": "http",
+        "PROTOCOL": "https",
         "PORT": body.f_port,
         "AUTH": body.f_auth,
         "SUPPORT_CHAT": body.f_support_chat,
