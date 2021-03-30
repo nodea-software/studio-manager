@@ -111,7 +111,7 @@ exports.generateStack = async (body) => {
                 },
                 "volumes": [
                     "app:/app",
-                    "~/dockside/traefik/conf/dynamic:/app/workspace/rules"
+                    "/opt/dockside/traefik/conf/dynamic:/app/workspace/rules"
                 ],
                 "environment": environment,
                 "labels": [
