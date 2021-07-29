@@ -62,6 +62,24 @@
         "defaultValue": null,
         "validate": true
     },
+    "f_cloud_portainer_api_url": {
+        "type": "STRING",
+        "newmipsType": "string",
+        "defaultValue": null,
+        "validate": true
+    },
+    "f_cloud_portainer_login": {
+        "type": "STRING",
+        "newmipsType": "string",
+        "defaultValue": null,
+        "validate": true
+    },
+    "f_cloud_portainer_password": {
+        "type": "STRING",
+        "newmipsType": "string",
+        "defaultValue": null,
+        "validate": true
+    },
     "f_default_env_port": {
         "type": "STRING",
         "newmipsType": "string",

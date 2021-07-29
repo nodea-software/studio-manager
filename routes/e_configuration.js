@@ -28,14 +28,6 @@ router.get('/update_form', block_access.actionAccessMiddleware("configuration", 
         enum_radio: enums_radios.translated("e_configuration", req.session.lang_user, options)
     };
 
-    if (typeof req.query.associationFlag !== 'undefined') {
-        data.associationFlag = req.query.associationFlag;
-        data.associationSource = req.query.associationSource;
-        data.associationForeignKey = req.query.associationForeignKey;
-        data.associationAlias = req.query.associationAlias;
-        data.associationUrl = req.query.associationUrl;
-    }
-
     entity_helper.optimizedFindOne('E_configuration', id_e_configuration, options).then(function(e_configuration) {
         if (!e_configuration) {
             data.error = 404;
@@ -45,27 +37,14 @@ router.get('/update_form', block_access.actionAccessMiddleware("configuration", 
         // Do not send password for security
         delete e_configuration.f_gitlab_private_token;
         delete e_configuration.f_portainer_password;
+        delete e_configuration.f_cloud_portainer_password;
         delete e_configuration.f_default_env_chat_pwd;
 
         e_configuration.dataValues.enum_radio = data.enum_radio;
         data.e_configuration = e_configuration;
-        // Update some data before show, e.g get picture binary
-        entity_helper.getPicturesBuffers(e_configuration, "e_configuration", true).then(function() {
-            // Get association data that needed to be load directly here (to do so set loadOnStart param to true in options).
-            entity_helper.getLoadOnStartData(req.query.ajax ? e_configuration.dataValues : data, options).then(function(data) {
-                if (req.query.ajax) {
-                    e_configuration.dataValues = data;
-                    res.render('e_configuration/update_fields', e_configuration.get({
-                        plain: true
-                    }));
-                } else
-                    res.render('e_configuration/update', data);
-            }).catch(function(err) {
-                entity_helper.error(err, req, res, "/", "e_configuration");
-            })
-        }).catch(function(err) {
-            entity_helper.error(err, req, res, "/", "e_configuration");
-        })
+
+        res.render('e_configuration/update', data);
+
     }).catch(function(err) {
         entity_helper.error(err, req, res, "/", "e_configuration");
     })
@@ -92,6 +71,11 @@ router.post('/update', block_access.actionAccessMiddleware("configuration", "upd
             delete updateObject.f_portainer_password;
         else
             updateObject.f_portainer_password = __cryptr.encrypt(updateObject.f_portainer_password);
+
+        if(!updateObject.f_cloud_portainer_password || updateObject.f_cloud_portainer_password == '')
+            delete updateObject.f_cloud_portainer_password;
+        else
+            updateObject.f_cloud_portainer_password = __cryptr.encrypt(updateObject.f_cloud_portainer_password);
 
         if(!updateObject.f_default_mail_pwd || updateObject.f_default_mail_pwd == '')
             delete updateObject.f_default_mail_pwd;

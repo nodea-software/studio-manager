@@ -413,9 +413,12 @@
             "f_gitlab_url": "Gitlab URL",
             "f_gitlab_login": "Gitlab Login",
             "f_gitlab_private_token": "Gitlab Private Token",
-            "f_portainer_api_url": "Portainer API URL",
-            "f_portainer_login": "Portainer Login",
-            "f_portainer_password": "Portainer Password"
+            "f_portainer_api_url": "Studio Portainer API URL",
+            "f_portainer_login": "Studio Portainer Login",
+            "f_portainer_password": "Studio Portainer Password",
+            "f_cloud_portainer_api_url": "Cloud Portainer API URL",
+            "f_cloud_portainer_login": "Cloud Portainer Login",
+            "f_cloud_portainer_password": "Cloud Portainer Password"
         },
         "e_environment": {
             "label_entity": "Environment",

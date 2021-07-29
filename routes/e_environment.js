@@ -169,7 +169,10 @@ router.get('/create_form', block_access.actionAccessMiddleware("environment", "c
             'f_gitlab_private_token',
             'f_portainer_api_url',
             'f_portainer_login',
-            'f_portainer_password'
+            'f_portainer_password',
+            'f_cloud_portainer_api_url',
+            'f_cloud_portainer_login',
+            'f_cloud_portainer_password'
         ];
 
         for (var i = 0; i < requiredConf.length; i++) {

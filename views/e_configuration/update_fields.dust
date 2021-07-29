@@ -72,7 +72,7 @@
     </div>
     <div class="col-xs-12 text-center">
         <div class="form-group form-title">
-            <h3>Portainer</h3>
+            <h3>Studio Portainer</h3>
         </div>
     </div>
     <div data-field="f_portainer_api_url" class="fieldLineHeight col-xs-12 col-sm-4">
@@ -104,6 +104,36 @@
                 (Empty = Unchanged)
             </label>
             <input class="form-control input" placeholder='{#__ key="entity.e_configuration.f_portainer_password" /}' name="f_portainer_password" value="" type="password" maxlength="255">
+        </div>
+    </div>
+    <div class="col-xs-12 text-center">
+        <div class="form-group form-title">
+            <h3>Cloud Portainer</h3>
+        </div>
+    </div>
+    <div data-field="f_cloud_portainer_api_url" class="fieldLineHeight col-xs-12 col-sm-4">
+        <div class="form-group">
+            <label for="f_cloud_portainer_api_url">
+                {#__ key="entity.e_configuration.f_cloud_portainer_api_url"/}
+            </label>
+            <input class="form-control input" placeholder='{#__ key="entity.e_configuration.f_cloud_portainer_api_url" /}' name="f_cloud_portainer_api_url" value="{f_cloud_portainer_api_url}" type="text" maxlength="255">
+        </div>
+    </div>
+    <div data-field="f_cloud_portainer_login" class="fieldLineHeight col-xs-12 col-sm-4">
+        <div class="form-group">
+            <label for="f_cloud_portainer_login">
+                {#__ key="entity.e_configuration.f_cloud_portainer_login"/}
+            </label>
+            <input class="form-control input" placeholder='{#__ key="entity.e_configuration.f_cloud_portainer_login" /}' name="f_cloud_portainer_login" value="{f_cloud_portainer_login}" type="text" maxlength="255">
+        </div>
+    </div>
+    <div data-field="f_cloud_portainer_password" class="fieldLineHeight col-xs-12 col-sm-4">
+        <div class="form-group">
+            <label for="f_cloud_portainer_password">
+                {#__ key="entity.e_configuration.f_cloud_portainer_password"/}&nbsp;
+                (Empty = Unchanged)
+            </label>
+            <input class="form-control input" placeholder='{#__ key="entity.e_configuration.f_cloud_portainer_password" /}' name="f_cloud_portainer_password" value="" type="password" maxlength="255">
         </div>
     </div>
     <div class="col-xs-12 text-center">
