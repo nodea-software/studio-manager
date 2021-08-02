@@ -64,7 +64,7 @@ exports.generateStack = async (body) => {
         "DOMAIN_STUDIO": conf.f_studio_domain,
         "DOMAIN_CLOUD": conf.f_cloud_domain,
         "SERVER_IP": containerIP,
-        "DATABASE_IP": "database",
+        "DATABASE_IP": databaseIP,
         "DATABASE_USER": "nodea",
         "DATABASE_PWD": "nodea",
         "DATABASE_NAME": "nodea",
@@ -101,9 +101,6 @@ exports.generateStack = async (body) => {
                 "container_name": stackName + "_app",
                 "image": "nodeasoftware/nodea:" + image,
                 "restart": "always",
-                "links": [
-                    "database:database"
-                ],
                 "networks": {
                     [network]: {
                         "ipv4_address": containerIP
