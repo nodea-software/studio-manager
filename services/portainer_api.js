@@ -107,8 +107,8 @@ exports.generateStack = async (body) => {
                     }
                 },
                 "volumes": [
-                    "app:/app",
-                    "/opt/dockside/traefik/conf/dynamic:/app/workspace/rules"
+                    "workspace:/nodea/workspace",
+                    "/opt/dockside/traefik/conf/dynamic:/nodea/workspace/rules"
                 ],
                 "environment": environment,
                 "labels": [
@@ -161,7 +161,7 @@ exports.generateStack = async (body) => {
             }
         },
         "volumes": {
-            "app": {},
+            "workspace": {},
             "db_data": {}
         }
     });
