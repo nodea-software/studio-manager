@@ -104,6 +104,12 @@
         "defaultValue": null,
         "validate": true
     },
+    "f_default_env_demo_mode": {
+        "type": "STRING",
+        "newmipsType": "string",
+        "defaultValue": null,
+        "validate": true
+    },
     "f_default_env_chat_api_url": {
         "type": "STRING",
         "newmipsType": "string",

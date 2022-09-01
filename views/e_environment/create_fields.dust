@@ -89,7 +89,7 @@
             <input class="form-control input" placeholder='Authentification' name="f_auth" value="{conf.f_default_env_auth}" type="text" maxlength="255">
         </div>
     </div>
-    <div data-field="f_default_env_support_chat" class="fieldLineHeight col-xs-12 col-sm-6">
+    <div data-field="f_default_env_support_chat" class="fieldLineHeight col-xs-12 col-sm-4">
         <div class="form-group">
             <label for="f_default_env_support_chat">
                 Chat enabled
@@ -103,7 +103,7 @@
             {/ifTrue}
         </div>
     </div>
-    <div data-field="f_default_env_open_signup" class="fieldLineHeight col-xs-12 col-sm-6">
+    <div data-field="f_default_env_open_signup" class="fieldLineHeight col-xs-12 col-sm-4">
         <div class="form-group">
             <label for="f_default_env_open_signup">
                 Open signup
@@ -114,6 +114,20 @@
                 <input class="form-control input" name="f_open_signup" value="{conf.f_default_env_open_signup}" type="checkbox" checked="">
             {:else}
                 <input class="form-control input" name="f_open_signup" value="{conf.f_default_env_open_signup}" type="checkbox">
+            {/ifTrue}
+        </div>
+    </div>
+    <div data-field="f_default_env_demo_mode" class="fieldLineHeight col-xs-12 col-sm-4">
+        <div class="form-group">
+            <label for="f_default_env_demo_mode">
+                Demo mode
+            </label>
+            &nbsp;
+            <br>
+            {@ifTrue key=conf.f_default_env_demo_mode}
+                <input class="form-control input" name="f_demo_mode" value="{conf.f_default_env_demo_mode}" type="checkbox" checked="">
+            {:else}
+                <input class="form-control input" name="f_demo_mode" value="{conf.f_default_env_demo_mode}" type="checkbox">
             {/ifTrue}
         </div>
     </div>

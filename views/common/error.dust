@@ -1,30 +1,29 @@
-{>"main_layout"/}
-{<header}
-    <h1>Oups !</h1>
-    <ol class="breadcrumb">
-        <li><a href="/"><i class="fa fa-dashboard"></i>{#__ key="module.home"/}</a></li>
-        <li class="active">Oups !</li>
-    </ol>
-{/header}
-{<content}
-    <div class="error-page" style="width:1000px;">
-        <div class="col-xs-4">
-            <img src="/img/mipsy.png" style="width:300px;"/>
+<!DOCTYPE html>
+<html class="bg-navy">
+    <head>
+        <meta charset="UTF-8">
+        <title>{#__ key="app.name"/} | {#__ key="login.log_in"/}</title>
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+        <!-- bootstrap 3.0.2-->
+        <link href="/css/Bootstrap/bootstrap.min.css" rel="stylesheet" type="text/css">
+        <!-- font Awesome-->
+        <link href="/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+        <!-- Theme style-->
+        <link href="/css/AdminLteV2/AdminLTE-login.css" rel="stylesheet" type="text/css">
+        {! Toastr !}
+        <link href="/css/toastr/toastr.min.css" rel="stylesheet" type="text/css">
+        {+custom_css /}
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries-->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file://-->
+        <!--if lt IE 9
+        script(src='https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js')
+        script(src='https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js')
+        -->
+        <link href="/FAVICON-COULEUR-01.png" rel="icon" type='image/png'>
+    </head>
+    <body class="bg-navy text-center">
+        <div class="col-12">
+            <h1 class="headline"><b><i class="fa fa-warning text-yellow"></i>&nbsp;500 - Error</b></h1>
         </div>
-        <div class="col-xs-8">
-            <div class="error-content">
-                <h3>{#__ key="error.500.title"/}</h3>
-                <br>
-                <p>
-                    <div class="col-xs-12 col-sm-12" style="padding:0;">
-                        {#__ key="error.goHome"/} :<br><br><a class="btn btn-default" href="/"><i class="fa fa-home"></i>&nbsp;&nbsp;{#__ key="error.home"/}</a></a>
-                    </div>
-                    <br><br><br><br><br><br>
-                    <div class="col-xs-12 col-sm-12" style="padding:0;">
-                        {#__ key="error.goBack"/} :<br><br><a class="btn btn-default" href="javascript:history.back();"><i class="fa fa-arrow-left"></i>&nbsp;&nbsp;{#__ key="error.goBackText"/}</a>
-                    </div>
-                </p>
-            </div>
-        </div>
-    </div>
-{/content}
+    </body>
+</html>

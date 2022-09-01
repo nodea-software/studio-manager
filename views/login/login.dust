@@ -62,8 +62,6 @@
         </div>
         <div class="footer">
             <button type="submit" class="btn btn-primary btn-block">{#__ key="login.submit"/}</button>
-            <p><a href="/reset_password">{#__ key="login.reset_password.title"/}</a></p>
-            <p><a href="/first_connection">{#__ key="login.first_connection.title"/}</a></p>
         </div>
     </form>
 {/content}

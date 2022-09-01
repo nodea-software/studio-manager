@@ -60,6 +60,7 @@ exports.generateStack = async (body) => {
         "AUTH": body.f_auth,
         "SUPPORT_CHAT": body.f_support_chat,
         "OPEN_SIGNUP": body.f_open_signup,
+        "DEMO_MODE": body.f_demo_mode,
         "SUB_DOMAIN": stackName,
         "DOMAIN_STUDIO": conf.f_studio_domain,
         "DOMAIN_CLOUD": conf.f_cloud_domain,
